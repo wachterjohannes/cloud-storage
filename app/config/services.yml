@@ -1,9 +1,12 @@
-# Learn more about services, parameters and containers at
-# http://symfony.com/doc/current/service_container.html
-parameters:
-#    parameter_name: value
-
 services:
-#    service_name:
-#        class: AppBundle\Directory\ClassName
-#        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+    app.remote_storage:
+        class: AppBundle\RemoteStorage\RemoteStorage
+        arguments: ['@app.metadata_storage', '@app.document_storage']
+
+    app.metadata_storage:
+        class: AppBundle\RemoteStorage\DoctrineMetadataStorage
+        arguments: ['@doctrine.orm.entity_manager']
+
+    app.document_storage:
+        class: AppBundle\RemoteStorage\FileDocumentStorage
+        arguments: ['%kernel.root_dir%/../var/documents']
