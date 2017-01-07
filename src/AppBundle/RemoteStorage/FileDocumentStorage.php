@@ -73,7 +73,7 @@ class FileDocumentStorage implements DocumentStorageInterface
             }
             if (!file_exists($folderPath)) {
                 // create it
-                if (false === @mkdir($this->baseDir . $pathItem, 0770)) {
+                if (false === @mkdir($folderPath, 0770)) {
                     throw new DocumentStorageException('unable to create directory');
                 }
             }
@@ -86,6 +86,7 @@ class FileDocumentStorage implements DocumentStorageInterface
         if (false === @file_put_contents($documentPath, $documentContent, LOCK_EX)) {
             throw new DocumentStorageException('unable to write document');
         }
+
         // PHP caches files and doesn't flush on getting file size, so we
         // really have to flush the cache manually, otherwise directory listings
         // potentially give you the wrong information. This only affects the

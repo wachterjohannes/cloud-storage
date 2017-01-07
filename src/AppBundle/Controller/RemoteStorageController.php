@@ -165,10 +165,12 @@ class RemoteStorageController extends Controller
 
         $requestedVersion = $this->stripQuotes($request->headers->get('If-None-Match'));
         $documentContentType = $this->getRemoteStorage()->getContentType($path);
+        $documentContentHash= $this->getRemoteStorage()->getContentHash($path);
         if (null !== $requestedVersion && in_array($documentVersion, $requestedVersion)) {
             $response = new Response(null, 304);
             $response->headers->set('ETag', '"' . $documentVersion . '"');
             $response->headers->set('Content-Type', $documentContentType);
+            $response->headers->set('Content-Hash', $documentContentHash);
 
             return $response;
         }

@@ -54,22 +54,37 @@ class DoctrineMetadataStorage implements MetadataStorageInterface
         return $document->getContentType();
     }
 
+    public function getContentHash(Path $p)
+    {
+        if ($p->getIsFolder()) {
+            return null;
+        }
+
+        /** @var Document $document */
+        $document = $this->repository->find($p->getPath());
+        if (!$document || $document->isFolder()) {
+            return null;
+        }
+
+        return $document->getContentHash();
+    }
+
     public function updateFolder(Path $p)
     {
         if (!$p->getIsFolder()) {
             throw new MetadataStorageException('not a folder');
         }
 
-        return $this->updateDocument($p, null, null);
+        return $this->updateDocument($p, null, null, null);
     }
 
-    public function updateDocument(Path $p, $contentType, $contentLength)
+    public function updateDocument(Path $p, $contentType, $contentLength, $contentHash)
     {
         /** @var Document $document */
         $document = $this->repository->find($p->getPath());
         if (null === $document) {
             $document = new Document($p->getPath(), $p->getIsFolder());
-            $document->setVersion($newVersion = '1:' . uniqid());
+            $document->setVersion('1:' . uniqid());
             $this->entityManager->persist($document);
         } else {
             $currentVersion = $document->getVersion();
@@ -79,8 +94,11 @@ class DoctrineMetadataStorage implements MetadataStorageInterface
 
         $document->setContentType($contentType);
         $document->setContentLength($contentLength);
+        $document->setContentHash($contentHash);
 
         $this->entityManager->flush();
+
+        return $document;
     }
 
     public function deleteNode(Path $p)

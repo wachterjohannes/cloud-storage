@@ -48,6 +48,13 @@ class Document
     protected $contentLength;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $contentHash;
+
+    /**
      * @param string $path
      * @param bool $isFolder
      */
@@ -145,6 +152,30 @@ class Document
     public function setContentLength(string $contentLength = null): Document
     {
         $this->contentLength = $contentLength;
+
+        return $this;
+    }
+
+    /**
+     * Returns contentHash.
+     *
+     * @return string
+     */
+    public function getContentHash(): string
+    {
+        return $this->contentHash;
+    }
+
+    /**
+     * Set contentHash.
+     *
+     * @param string $contentHash
+     *
+     * @return Document
+     */
+    public function setContentHash(string $contentHash = null): Document
+    {
+        $this->contentHash = $contentHash;
 
         return $this;
     }

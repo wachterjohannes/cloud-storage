@@ -4,7 +4,6 @@ namespace AppBundle\RemoteStorage;
 
 interface DocumentStorageInterface
 {
-
     public function isDocument(Path $p);
 
     /**

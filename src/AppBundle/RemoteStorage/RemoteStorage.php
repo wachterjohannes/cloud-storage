@@ -34,7 +34,7 @@ class RemoteStorage implements RemoteStorageInterface
         }
 
         $updatedEntities = $this->d->putDocument($p, $documentData);
-        $this->md->updateDocument($p, $contentType, strlen($documentData));
+        $this->md->updateDocument($p, $contentType, strlen($documentData), md5($documentData));
         foreach ($updatedEntities as $u) {
             $this->md->updateFolder(new Path($u));
         }
@@ -70,6 +70,11 @@ class RemoteStorage implements RemoteStorageInterface
         return $this->md->getContentType($p);
     }
 
+    public function getContentHash(Path $p)
+    {
+        return $this->md->getContentHash($p);
+    }
+
     public function getDocument(Path $p, array $ifNoneMatch = null)
     {
         if (null !== $ifNoneMatch && in_array($this->md->getVersion($p), $ifNoneMatch)) {
@@ -90,11 +95,13 @@ class RemoteStorage implements RemoteStorageInterface
             'items' => $this->d->getFolder($p),
         ];
         foreach ($f['items'] as $name => $meta) {
-            $f['items'][$name]['ETag'] = $this->md->getVersion(new Path($p->getFolderPath().$name));
+            $path= new Path($p->getFolderPath() . $name);
+            $f['items'][$name]['ETag'] = $this->md->getVersion($path);
 
             // if item is a folder we don't want Content-Type
             if (strrpos($name, '/') !== strlen($name) - 1) {
-                $f['items'][$name]['Content-Type'] = $this->md->getContentType(new Path($p->getFolderPath().$name));
+                $f['items'][$name]['Content-Type'] = $this->md->getContentType($path);
+                $f['items'][$name]['Content-Hash'] = $this->md->getContentHash($path);
             }
         }
 

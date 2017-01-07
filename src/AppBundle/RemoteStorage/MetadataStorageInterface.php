@@ -9,6 +9,8 @@ interface MetadataStorageInterface
 
     public function getContentType(Path $p);
 
+    public function getContentHash(Path $p);
+
     public function updateFolder(Path $p);
 
     /**
@@ -19,7 +21,7 @@ interface MetadataStorageInterface
      * sequence number in the same location, but in order to check if all versions
      * are updated up to the root we have to do this this way...
      */
-    public function updateDocument(Path $p, $contentType, $contentLength);
+    public function updateDocument(Path $p, $contentType, $contentLength, $contentHash);
 
     public function deleteNode(Path $p);
 }

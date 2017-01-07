@@ -12,6 +12,8 @@ interface RemoteStorageInterface
 
     public function getContentType(Path $p);
 
+    public function getContentHash(Path $p);
+
     public function getDocument(Path $p, array $ifNoneMatch = null);
 
     public function getFolder(Path $p, array $ifNoneMatch = null);
